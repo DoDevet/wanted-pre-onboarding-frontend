@@ -1,3 +1,5 @@
+import React from "react";
+
 interface InputProps {
   type: string;
   testId: string;
@@ -6,13 +8,7 @@ interface InputProps {
   fn: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export default function Input({
-  inputText,
-  testId,
-  type,
-  fn,
-  value,
-}: InputProps) {
+function Input({ inputText, testId, type, fn, value }: InputProps) {
   return (
     <div className="flex flex-col">
       <label htmlFor={type}>{inputText}</label>
@@ -27,7 +23,4 @@ export default function Input({
     </div>
   );
 }
-
-/* <input data-testid="email-input" />
-<input data-testid="password-input" />
-<button data-testid="signup-button">회원가입</button>*/
+export default React.memo(Input);

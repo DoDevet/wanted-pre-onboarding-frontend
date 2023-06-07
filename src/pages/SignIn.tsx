@@ -1,8 +1,6 @@
 import SignForm from "../components/SignForm";
-import { useNavigate } from "react-router-dom";
 
-export default function SignUp() {
-  const navigate = useNavigate();
+export default function SignIn() {
   const onSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
     email: string,
@@ -11,7 +9,7 @@ export default function SignUp() {
     event.preventDefault();
     const body = { email, password };
     const res = await fetch(
-      "https://www.pre-onboarding-selection-task.shop/auth/signup",
+      "https://www.pre-onboarding-selection-task.shop/auth/signin",
       {
         method: "POST",
         headers: {
@@ -20,14 +18,11 @@ export default function SignUp() {
         body: JSON.stringify(body),
       }
     );
-    if (res.status === 201) {
-      navigate("/signin", {
-        state: {
-          email,
-          password,
-        },
-      });
+
+    if (res.status === 200) {
+      const { access_token } = await res.json();
+      localStorage.setItem("token", access_token);
     }
   };
-  return <SignForm onSubmit={onSubmit} />;
+  return <SignForm onSubmit={onSubmit} isSignIn />;
 }
