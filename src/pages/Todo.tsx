@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-
 import Layout from "../components/Layout";
 import isLoggedInFN from "../libs/isLoggedIn";
+import TodoInput from "../components/TodoInput";
 
 export default function Todo() {
   const [token, setToken] = useState<string | null>(isLoggedInFN());
@@ -13,5 +13,13 @@ export default function Todo() {
     return () => window.removeEventListener("storage", handleSetToken);
   }, []);
 
-  return token ? <Layout>Home</Layout> : <Navigate replace to="/signin" />;
+  return token ? (
+    <Layout>
+      <div className="items-center justify-center w-full">
+        <TodoInput />
+      </div>
+    </Layout>
+  ) : (
+    <Navigate replace to="/signin" />
+  );
 }

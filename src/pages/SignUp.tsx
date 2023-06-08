@@ -10,6 +10,7 @@ export default function SignUp() {
   ) => {
     event.preventDefault();
     const body = { email, password };
+
     const res = await fetch(
       "https://www.pre-onboarding-selection-task.shop/auth/signup",
       {
@@ -20,6 +21,7 @@ export default function SignUp() {
         body: JSON.stringify(body),
       }
     );
+
     if (res.status === 201) {
       navigate("/signin", {
         state: {
