@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import Input from "./Input";
-import isLoggedInFN from "../libs/isLoggedIn";
 import TodoMutation, { TodoForm } from "../libs/todoMutation";
 import TodoComponent from "./TodoComponent";
 
@@ -8,6 +7,7 @@ export default function TodoInput() {
   const [inputTodoText, setInputTodoText] = useState("");
   const [todos, setTodos] = useState<TodoForm[]>();
   const [todo, setTodo] = useState("");
+
   useEffect(() => {
     (async () => {
       const data = await TodoMutation({ method: "GET" });
@@ -75,7 +75,7 @@ export default function TodoInput() {
           </button>
         </div>
       </form>
-      <div className="mt-5 space-y-3">
+      <div className="mt-5 space-y-5">
         {todos?.map((todo) => (
           <TodoComponent
             key={todo.id}
