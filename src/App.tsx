@@ -1,21 +1,15 @@
 import "./index.css";
-import React, { useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-
-import Home from "./pages/Home";
+import { Route, Routes } from "react-router-dom";
+import Todo from "./pages/Todo";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import Home from "./pages/Home";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  const isLoggedIn = false;
   return (
     <Routes>
-      <Route
-        path="/"
-        element={isLoggedIn ? <Home /> : <Navigate replace to={"/signup"} />}
-      ></Route>
+      <Route path="/*" element={<Home />}></Route>
+      <Route path="/todo" element={<Todo />}></Route>
       <Route path="/signup" element={<SignUp />}></Route>
       <Route path="/signin" element={<SignIn />}></Route>
     </Routes>

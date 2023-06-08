@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import SignForm from "../components/SignForm";
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const onSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
     email: string,
@@ -22,6 +24,8 @@ export default function SignIn() {
     if (res.status === 200) {
       const { access_token } = await res.json();
       localStorage.setItem("token", access_token);
+
+      navigate("/todo");
     }
   };
   return <SignForm onSubmit={onSubmit} isSignIn />;

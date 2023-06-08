@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Input from "../components/Input";
 import Layout from "../components/Layout";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import isLoggedInFN from "../libs/isLoggedIn";
 interface SignFormProps {
   onSubmit: (
     event: React.FormEvent<HTMLFormElement>,
@@ -32,13 +33,13 @@ export default function SignForm({
     (event: React.FormEvent<HTMLInputElement>) => {
       setEmail(event.currentTarget.value);
     },
-    [email]
+    []
   );
   const onChangePassword = useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
       setPassword(event.currentTarget.value);
     },
-    [password]
+    []
   );
 
   useEffect(() => {
@@ -46,11 +47,13 @@ export default function SignForm({
     else setDisabled(true);
   }, [password, email]);
 
-  return (
+  return isLoggedInFN() ? (
+    <Navigate replace to={"/todo"} />
+  ) : (
     <Layout>
       <h1 className="text-center">{isSignIn ? "Login" : "Sign Up"}</h1>
       <form onSubmit={(event) => onSubmit(event, email, password)}>
-        <div className="border p-6 rounded-sm space-y-4 my-5">
+        <div className="p-6 my-5 space-y-4 border rounded-sm">
           <Input
             inputText={"Input Email Adress"}
             testId="email-input"
@@ -67,9 +70,9 @@ export default function SignForm({
           />
         </div>
         <button
-          className="text-center w-full disabled:text-gray-500"
+          className="w-full text-center disabled:text-gray-500"
           disabled={disabled}
-          data-testid="signup-button"
+          data-testid={isSignIn ? "signin-button" : "signup-button"}
         >
           <p className="font-semibold">{isSignIn ? "로그인" : "회원가입"}</p>
         </button>
