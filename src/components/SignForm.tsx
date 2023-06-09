@@ -1,23 +1,39 @@
 import { useCallback, useEffect, useState } from "react";
 import Input from "../components/Input";
 import Layout from "../components/Layout";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import isLoggedInFN from "../libs/isLoggedIn";
+import Button from "./Button";
+import SignHandler from "../libs/signHandler";
+
 interface SignFormProps {
-  onSubmit: (
-    event: React.FormEvent<HTMLFormElement>,
-    email: string,
-    password: string
-  ) => void;
   isSignIn?: boolean;
 }
-export default function SignForm({
-  onSubmit,
-  isSignIn = false,
-}: SignFormProps) {
+export default function SignForm({ isSignIn = false }: SignFormProps) {
+  const navigate = useNavigate();
+  const [handler, { loading, data, status }] = SignHandler(isSignIn);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (isSignIn && !loading && data && data.access_token) {
+      localStorage.setItem("token", data.access_token);
+      navigate("/todo");
+    }
+    if (!isSignIn && !loading && status === 201) {
+      navigate("/signin", {
+        state: { email, password },
+      });
+    }
+    setErrorMessage(data?.message);
+  }, [data, loading, status]);
+
+  const onSubmitTest = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handler({ email, password });
+  };
 
   const { state } = useLocation();
   useEffect(() => {
@@ -52,8 +68,11 @@ export default function SignForm({
   ) : (
     <Layout>
       <h1 className="text-center">{isSignIn ? "Login" : "Sign Up"}</h1>
-      <form onSubmit={(event) => onSubmit(event, email, password)}>
-        <div className="p-6 my-5 space-y-4 border rounded-sm">
+      <form
+        className="flex flex-col items-center justify-center"
+        onSubmit={onSubmitTest}
+      >
+        <div className="w-full p-6 my-5 space-y-4 border rounded-sm">
           <Input
             inputText={"Input Email Adress"}
             testId="email-input"
@@ -69,14 +88,13 @@ export default function SignForm({
             type="password"
           />
         </div>
-        <button
-          className="w-full text-center disabled:text-gray-500"
+        <Button
           disabled={disabled}
-          data-testid={isSignIn ? "signin-button" : "signup-button"}
-        >
-          <p className="font-semibold">{isSignIn ? "로그인" : "회원가입"}</p>
-        </button>
+          btnText={isSignIn ? "로그인" : "회원가입"}
+          testId={isSignIn ? "signin-button" : "signup-button"}
+        />
       </form>
+      <p className="my-3 text-center text-red-400">{errorMessage}</p>
     </Layout>
   );
 }

@@ -1,6 +1,6 @@
 import isLoggedInFN from "./isLoggedIn";
 
-type Method = "POST" | "GET" | "DELETE" | "PUT" | "UPDATE";
+type Method = "POST" | "GET" | "DELETE" | "PUT";
 
 interface TodoMutationProp {
   id?: number;
@@ -20,7 +20,7 @@ export default async function TodoMutation({
   method,
   data,
 }: TodoMutationProp): Promise<any> {
-  const responseData = await await fetch(
+  const responseData = await fetch(
     `https://www.pre-onboarding-selection-task.shop/todos${
       !id ? "" : `/${id}`
     }`,
@@ -33,5 +33,5 @@ export default async function TodoMutation({
       body: method === "GET" || !data ? null : JSON.stringify(data),
     }
   );
-  return method === "DELETE" ? responseData : responseData.json();
+  return method === "DELETE" ? responseData : await responseData.json();
 }

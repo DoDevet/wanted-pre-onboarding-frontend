@@ -5,6 +5,7 @@ interface InputProps {
   testId: string;
   inputText: string;
   value: string;
+  disabled?: boolean;
   fn: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
@@ -18,7 +19,7 @@ function Input({ inputText, testId, type, fn, value }: InputProps) {
         id={type}
         data-testid={testId}
         type={type}
-        className="border-2 rounded-md py-1 px-1"
+        className="px-1 py-1 border-2 rounded-md"
       />
     </div>
   );
