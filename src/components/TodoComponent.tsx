@@ -85,8 +85,12 @@ function TodoComponent({
         <div className="space-x-3">
           {editMode ? (
             <>
-              <button disabled={disabled}>제출</button>
-              <button onClick={onEditToggle}>취소</button>
+              <button data-testid="submit-button" disabled={disabled}>
+                제출
+              </button>
+              <button data-testid="cancel-button" onClick={onEditToggle}>
+                취소
+              </button>
             </>
           ) : (
             <>

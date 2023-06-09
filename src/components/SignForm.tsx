@@ -28,7 +28,7 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
       });
     }
     setErrorMessage(data?.message);
-  }, [data, loading, status]);
+  }, [data, loading, status, email, password, navigate, isSignIn]);
 
   const onSubmitTest = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
