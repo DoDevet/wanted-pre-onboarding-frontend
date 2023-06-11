@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import isLoggedInFN from "../libs/isLoggedIn";
 import TodoInput from "../components/TodoInput";
-import TodoMutation, { TodoForm } from "../libs/todoMutation";
+import TodoHandler, { TodoForm } from "../libs/todoHandler";
 import TodoComponent from "../components/TodoComponent";
 
 export default function Todo() {
@@ -12,7 +12,7 @@ export default function Todo() {
 
   useEffect(() => {
     (async () => {
-      const data = await TodoMutation({ method: "GET" });
+      const data = await TodoHandler({ method: "GET" });
       setTodos(data);
     })();
     const handleSetToken = () => setToken(isLoggedInFN());
@@ -21,7 +21,7 @@ export default function Todo() {
   }, []);
 
   const deleteFn = useCallback(async (id: number) => {
-    const data = await TodoMutation({
+    const data = await TodoHandler({
       method: "DELETE",
       id,
     });
@@ -31,7 +31,7 @@ export default function Todo() {
   }, []);
   const updateFn = useCallback(
     async (id: number, todo: string, isCompleted: boolean) => {
-      const data = await TodoMutation({
+      const data = await TodoHandler({
         method: "PUT",
         id,
         data: { todo, isCompleted },
@@ -44,10 +44,10 @@ export default function Todo() {
     },
     []
   );
+
   return token ? (
     <Layout>
       <TodoInput setTodos={setTodos} />
-
       <div className="space-y-3">
         {todos?.map((todo) => (
           <TodoComponent

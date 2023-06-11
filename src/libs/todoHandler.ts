@@ -15,7 +15,7 @@ export interface TodoForm {
   userId: number;
 }
 
-export default async function TodoMutation({
+export default async function TodoHandler({
   id,
   method,
   data,

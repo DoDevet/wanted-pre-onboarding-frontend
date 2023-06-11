@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { TodoForm } from "../libs/todoMutation";
+import { TodoForm } from "../libs/todoHandler";
 
 interface TodoComponentProps extends TodoForm {
   deleteFn: (id: number) => void;
@@ -83,25 +83,19 @@ function TodoComponent({
           )}
         </label>
         <div className="space-x-3">
-          {editMode ? (
-            <>
-              <button data-testid="submit-button" disabled={disabled}>
-                제출
-              </button>
-              <button data-testid="cancel-button" onClick={onEditToggle}>
-                취소
-              </button>
-            </>
-          ) : (
-            <>
-              <button onClick={onEditToggle} data-testid="modify-button">
-                수정
-              </button>
-              <button onClick={onClickDelete} data-testid="delete-button">
-                삭제
-              </button>
-            </>
-          )}
+          <button
+            data-testid={editMode ? "submit-button" : "modify-button"}
+            disabled={editMode && disabled}
+            onClick={editMode ? undefined : onEditToggle}
+          >
+            {editMode ? "제출" : "수정"}
+          </button>
+          <button
+            data-testid={editMode ? "cancel-button" : "delete-button"}
+            onClick={editMode ? onEditToggle : onClickDelete}
+          >
+            {editMode ? "취소" : "삭제"}
+          </button>
         </div>
       </form>
     </li>
