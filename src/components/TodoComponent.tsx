@@ -1,24 +1,42 @@
 import React, { useEffect, useRef, useState } from "react";
-
-import { TodoForm } from "../libs/todoHandler";
-
-interface TodoComponentProps extends TodoForm {
-  deleteFn: (id: number) => void;
-  updateFn: (id: number, todo: string, isCompleted: boolean) => void;
+import { TodoForm } from "../pages/Todo";
+import useMutation from "../libs/useMutation";
+interface TodoCompoentsForm extends TodoForm {
+  setTodos: React.Dispatch<React.SetStateAction<TodoForm[] | undefined>>;
 }
-
 function TodoComponent({
   id,
   todo,
   isCompleted,
   userId,
-  deleteFn,
-  updateFn,
-}: TodoComponentProps) {
+  setTodos,
+}: TodoCompoentsForm) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [editMode, setEditMode] = useState(false);
   const [editTodo, setEditTodo] = useState("");
   const [disabled, setDisabled] = useState(false);
+
+  const [
+    editTodoHandler,
+    { loading: editLoading, data: editData, status: editStatus },
+  ] = useMutation<TodoForm>("PUT", "todos", id);
+
+  const [deleteTodoHandler, { loading: deleteLoading, status: deleteStatus }] =
+    useMutation("DELETE", "todos", id);
+
+  useEffect(() => {
+    if (!editLoading && editData && editStatus === 200) {
+      setTodos((prev) =>
+        prev?.map((todo) => (todo.id === id ? editData : todo))
+      );
+    }
+  }, [editStatus, editLoading, setTodos, id, editData]);
+  useEffect(() => {
+    if (!deleteLoading && deleteStatus === 204) {
+      setTodos((prev) => prev?.filter((todo) => todo.id !== id));
+    }
+  }, [deleteLoading, deleteStatus, setTodos, id]);
+
   useEffect(() => {
     if (editMode && inputRef) {
       inputRef.current?.focus();
@@ -29,11 +47,20 @@ function TodoComponent({
     setDisabled(editTodo.length !== 0 ? false : true);
   }, [editTodo]);
 
-  const onChangeEditText = (event: React.FormEvent<HTMLInputElement>) => {
+  const onClickDelete = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setEditTodo(event.currentTarget.value);
+    deleteTodoHandler(id);
   };
 
+  const onClickEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (editTodo !== todo) editTodoHandler({ id, todo: editTodo, isCompleted });
+    setEditMode((prev) => !prev);
+  };
+  const onChangeToggleBox = (event: React.FormEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    editTodoHandler({ id, todo, isCompleted: !isCompleted });
+  };
   const onEditToggle = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!editMode) {
@@ -42,21 +69,10 @@ function TodoComponent({
     }
     setEditMode((prev) => !prev);
   };
-  const onClickDelete = (event: React.FormEvent<HTMLButtonElement>) => {
+  const onChangeEditText = (event: React.FormEvent<HTMLInputElement>) => {
     event.preventDefault();
-    deleteFn(id);
+    setEditTodo(event.currentTarget.value);
   };
-
-  const onClickEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (editTodo !== todo) updateFn(id, editTodo, isCompleted);
-    setEditMode((prev) => !prev);
-  };
-  const onChangeToggleBox = (event: React.FormEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    updateFn(id, todo, !isCompleted);
-  };
-
   return (
     <li className="flex w-full px-1 py-1">
       <form

@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import isLoggedInFN from "../libs/isLoggedIn";
 import Button from "./Button";
-import SignHandler from "../libs/signHandler";
+import useMutation from "../libs/useMutation";
 interface SignUpResponseData {
   statusCode?: number;
   message?: string;
@@ -19,12 +19,11 @@ interface SignFormProps {
   isSignIn?: boolean;
 }
 
-//status 201 === Create Account,
-
 export default function SignForm({ isSignIn = false }: SignFormProps) {
   const navigate = useNavigate();
-  const [handler, { loading, data, status }] =
-    SignHandler<SignInResponseData>(isSignIn);
+
+  const [signHandler, { loading, data, status }] =
+    useMutation<SignInResponseData>("POST", isSignIn ? "signin" : "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -45,7 +44,7 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
 
   const onSubmitTest = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handler({ email, password });
+    signHandler({ email, password });
   };
 
   const { state } = useLocation();

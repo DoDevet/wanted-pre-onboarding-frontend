@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Input from "./Input";
-import TodoMutation, { TodoForm } from "../libs/todoHandler";
+import { TodoForm } from "../pages/Todo";
 import Button from "./Button";
+import useMutation from "../libs/useMutation";
 
 export default function TodoInput({
   setTodos,
@@ -9,32 +10,28 @@ export default function TodoInput({
   setTodos: React.Dispatch<React.SetStateAction<TodoForm[] | undefined>>;
 }) {
   const [inputTodoText, setInputTodoText] = useState("");
-  const [todo, setTodo] = useState<TodoForm>();
   const [disabled, setDisabled] = useState(true);
-
+  const [createTodo, { data, loading, status }] = useMutation<TodoForm>(
+    "POST",
+    "todos"
+  );
   useEffect(() => {
-    if (todo) {
-      setTodos((prev) => {
-        if (prev) {
-          return [...prev, todo];
-        } else return [todo];
-      });
+    if (!loading && data && status === 201) {
+      setTodos((prev) => [...prev!, data]);
     }
-  }, [todo, setTodos]);
+  }, [data, loading, status, setTodos]);
+
   useEffect(() => {
     if (inputTodoText.length !== 0) {
       setDisabled(false);
     } else setDisabled(true);
   }, [inputTodoText, setDisabled]);
+
   const onSubmitCreateTodo = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    const data: TodoForm = await TodoMutation({
-      method: "POST",
-      data: { todo: inputTodoText },
-    });
-    setTodo(data);
+    createTodo({ todo: inputTodoText });
     setInputTodoText("");
   };
 
@@ -53,7 +50,7 @@ export default function TodoInput({
         />
         <div className="flex items-center justify-center w-full">
           <Button
-            btnText="추가"
+            btnText={loading ? "Adding..." : "추가"}
             disabled={disabled}
             testId="new-todo-add-button"
           />
