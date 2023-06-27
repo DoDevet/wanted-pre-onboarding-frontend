@@ -5,7 +5,7 @@ import isLoggedInFN from "../libs/isLoggedIn";
 import TodoInput from "../components/TodoInput";
 
 import TodoComponent from "../components/TodoComponent";
-import useMutation from "../libs/useMutation";
+import useQuery from "../libs/useQuery";
 export interface TodoForm {
   id: number;
   isCompleted: boolean;
@@ -15,26 +15,21 @@ export interface TodoForm {
 
 export default function Todo() {
   const [token, setToken] = useState<string | null>(isLoggedInFN());
-  const [getTodos, { data, loading, status }] = useMutation<TodoForm[]>(
-    "GET",
-    "todos"
-  );
   const [todos, setTodos] = useState<TodoForm[]>();
-  useEffect(() => {
-    if (status === 0) {
-      getTodos({});
-    }
-  }, [status, getTodos]);
-  useEffect(() => {
-    if (!loading && data && status === 200) {
-      setTodos(data);
-    }
-  }, [loading, status, data]);
+  const { data, loading, status } = useQuery<TodoForm[]>({
+    type: "todos",
+  });
   useEffect(() => {
     const handleSetToken = () => setToken(isLoggedInFN());
     window.addEventListener("storage", handleSetToken);
     return () => window.removeEventListener("storage", handleSetToken);
   }, []);
+
+  useEffect(() => {
+    if (!loading && data && status === 200) {
+      setTodos(data);
+    }
+  }, [loading, status, data]);
 
   return token ? (
     <Layout>
