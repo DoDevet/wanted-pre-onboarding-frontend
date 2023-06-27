@@ -13,6 +13,3 @@ npm install & npm start
 ## 사용 라이브러리
 
 React, React Router, tailwind css
-
-[] - useMutation, (signHandler + todoHandler), GET 요청 미지원
-[x] - GET TODO

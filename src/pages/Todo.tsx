@@ -19,6 +19,7 @@ export default function Todo() {
   const { data, loading, status } = useQuery<TodoForm[]>({
     type: "todos",
   });
+
   useEffect(() => {
     const handleSetToken = () => setToken(isLoggedInFN());
     window.addEventListener("storage", handleSetToken);
