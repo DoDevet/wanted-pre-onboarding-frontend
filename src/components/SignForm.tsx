@@ -5,29 +5,42 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import isLoggedInFN from "../libs/isLoggedIn";
 import Button from "./Button";
 import SignHandler from "../libs/signHandler";
+interface SignUpResponseData {
+  statusCode?: number;
+  message?: string;
+  error?: string;
+}
+
+interface SignInResponseData extends SignUpResponseData {
+  access_token?: string;
+}
 
 interface SignFormProps {
   isSignIn?: boolean;
 }
+
+//status 201 === Create Account,
+
 export default function SignForm({ isSignIn = false }: SignFormProps) {
   const navigate = useNavigate();
-  const [handler, { loading, data, status }] = SignHandler(isSignIn);
+  const [handler, { loading, data, status }] =
+    SignHandler<SignInResponseData>(isSignIn);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (isSignIn && !loading && data && data.access_token) {
+    if (data && data.access_token) {
       localStorage.setItem("token", data.access_token);
       navigate("/todo");
     }
-    if (!isSignIn && !loading && status === 201) {
+    if (!isSignIn && status === 201) {
       navigate("/signin", {
         state: { email, password },
       });
     }
-    setErrorMessage(data?.message);
+    if (data && data.message) setErrorMessage(data.message);
   }, [data, loading, status, email, password, navigate, isSignIn]);
 
   const onSubmitTest = (event: React.FormEvent<HTMLFormElement>) => {
@@ -90,7 +103,7 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
         </div>
         <Button
           disabled={disabled}
-          btnText={isSignIn ? "로그인" : "회원가입"}
+          btnText={loading ? "Loading..." : isSignIn ? "로그인" : "회원가입"}
           testId={isSignIn ? "signin-button" : "signup-button"}
         />
       </form>

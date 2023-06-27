@@ -1,7 +1,6 @@
 import { useState } from "react";
-
-interface SignHandlerForm {
-  data?: any;
+interface SignHandlerForm<T> {
+  data?: T;
   status: number;
   errorMessage?: string;
   loading: boolean;
@@ -10,11 +9,15 @@ interface HandlerProps {
   email: string;
   password: string;
 }
-type SignHandlerReturnType = [(data: HandlerProps) => void, SignHandlerForm];
-export default function SignHandler(
+type SignHandlerReturnType<T> = [
+  (data: HandlerProps) => void,
+  SignHandlerForm<T>
+];
+
+export default function SignHandler<T>(
   isSignIn: boolean = false
-): SignHandlerReturnType {
-  const [response, setResponse] = useState<SignHandlerForm>({
+): SignHandlerReturnType<T> {
+  const [response, setResponse] = useState<SignHandlerForm<T>>({
     data: undefined,
     loading: false,
     status: 0,
