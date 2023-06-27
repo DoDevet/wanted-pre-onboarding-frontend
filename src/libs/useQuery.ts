@@ -35,9 +35,6 @@ export default function useQuery<T>({ type }: { type: "todos" }) {
   }, [type]);
 
   return {
-    data: state.data,
-    loading: state.loading,
-    error: state.error,
-    status: state.status,
+    ...state,
   };
 }
