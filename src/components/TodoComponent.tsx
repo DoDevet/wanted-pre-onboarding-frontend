@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TodoForm } from "../pages/Todo";
 import useMutation from "../libs/useMutation";
+import { api_slash } from "../libs/utils";
 interface TodoCompoentsForm extends TodoForm {
   setTodos: React.Dispatch<React.SetStateAction<TodoForm[] | undefined>>;
 }
@@ -19,10 +20,16 @@ function TodoComponent({
   const [
     editTodoHandler,
     { loading: editLoading, data: editData, status: editStatus },
-  ] = useMutation<TodoForm>("PUT", "todos", id);
+  ] = useMutation<TodoForm>({
+    method: "PUT",
+    url: api_slash<string | number>("todos", id),
+  });
 
   const [deleteTodoHandler, { loading: deleteLoading, status: deleteStatus }] =
-    useMutation("DELETE", "todos", id);
+    useMutation({
+      method: "DELETE",
+      url: api_slash<string | number>("todos", id),
+    });
 
   useEffect(() => {
     if (!editLoading && editData && editStatus === 200) {

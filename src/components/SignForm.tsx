@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
 import Input from "../components/Input";
 import Layout from "../components/Layout";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import isLoggedInFN from "../libs/isLoggedIn";
 import Button from "./Button";
+import { useCallback, useEffect, useState } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import useMutation from "../libs/useMutation";
+import isLoggedInFN from "../libs/isLoggedIn";
+import { api_slash } from "../libs/utils";
+
 interface SignUpResponseData {
   statusCode?: number;
   message?: string;
@@ -23,7 +25,10 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
   const navigate = useNavigate();
 
   const [signHandler, { loading, data, status }] =
-    useMutation<SignInResponseData>("POST", isSignIn ? "signin" : "signup");
+    useMutation<SignInResponseData>({
+      method: "POST",
+      url: api_slash("auth", isSignIn ? "signin" : "signup"),
+    });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);

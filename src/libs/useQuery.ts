@@ -8,7 +8,7 @@ interface UseQueryState<T> {
   status?: number;
 }
 
-export default function useQuery<T>({ type }: { type: "todos" }) {
+export default function useQuery<T>(url: string) {
   const [state, setState] = useState<UseQueryState<T>>({
     error: undefined,
     data: undefined,
@@ -16,10 +16,10 @@ export default function useQuery<T>({ type }: { type: "todos" }) {
     status: undefined,
   });
   useEffect(() => {
-    fetch(`https://www.pre-onboarding-selection-task.shop/todos`, {
+    fetch(url, {
       method: "GET",
       headers: {
-        Authorization: type === "todos" ? `Bearer ${isLoggedInFN()}` : "",
+        Authorization: `Bearer ${isLoggedInFN()}`,
         "Content-Type": "application/json",
       },
     })
@@ -32,7 +32,7 @@ export default function useQuery<T>({ type }: { type: "todos" }) {
       })
       .catch((error) => setState((prev) => ({ ...prev, error })))
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
-  }, [type]);
+  }, [url]);
 
   return {
     ...state,

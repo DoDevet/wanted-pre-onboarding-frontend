@@ -1,21 +1,24 @@
 import { useState } from "react";
 import isLoggedInFN from "./isLoggedIn";
 
-type Method = "POST" | "DELETE" | "PUT" | "GET";
+type Method = "POST" | "DELETE" | "PUT";
 interface UseMuataionForm<T> {
   data?: T;
   status: number;
   errorMessage?: string;
   loading: boolean;
 }
+interface UseMutationProps {
+  method: Method;
+  url: string;
+}
 
 type UseMutationReturnType<T> = [(data: any) => void, UseMuataionForm<T>];
 
-export default function useMutation<T>(
-  method: Method,
-  type: "todos" | "signin" | "signup",
-  id?: number
-): UseMutationReturnType<T> {
+export default function useMutation<T>({
+  method,
+  url,
+}: UseMutationProps): UseMutationReturnType<T> {
   const [state, setState] = useState<UseMuataionForm<T>>({
     data: undefined,
     loading: false,
@@ -26,19 +29,14 @@ export default function useMutation<T>(
   function handler(data: any) {
     const body = JSON.stringify({ ...data });
     setState((prev) => ({ ...prev, loading: true }));
-    fetch(
-      `https://www.pre-onboarding-selection-task.shop/${
-        type !== "todos" ? "auth/" + type : "todos" + (id ? `/${id}` : "")
-      }`,
-      {
-        method,
-        headers: {
-          Authorization: type === "todos" ? `Bearer ${isLoggedInFN()}` : "",
-          "Content-Type": "application/json",
-        },
-        body: method === "GET" ? null : body,
-      }
-    )
+    fetch(url, {
+      method,
+      headers: {
+        Authorization: isLoggedInFN() ? `Bearer ${isLoggedInFN()}` : "",
+        "Content-Type": "application/json",
+      },
+      body,
+    })
       .then((res) => {
         setState((prev) => ({ ...prev, status: res.status }));
         return res.json();

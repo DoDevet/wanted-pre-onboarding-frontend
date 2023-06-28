@@ -3,6 +3,7 @@ import Input from "./Input";
 import { TodoForm } from "../pages/Todo";
 import Button from "./Button";
 import useMutation from "../libs/useMutation";
+import { api_slash } from "../libs/utils";
 
 export default function TodoInput({
   setTodos,
@@ -11,10 +12,10 @@ export default function TodoInput({
 }) {
   const [inputTodoText, setInputTodoText] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [createTodo, { data, loading, status }] = useMutation<TodoForm>(
-    "POST",
-    "todos"
-  );
+  const [createTodo, { data, loading, status }] = useMutation<TodoForm>({
+    method: "POST",
+    url: api_slash("todos"),
+  });
   useEffect(() => {
     if (!loading && data && status === 201) {
       setTodos((prev) => [...prev!, data]);
