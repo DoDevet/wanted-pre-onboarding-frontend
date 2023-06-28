@@ -5,7 +5,7 @@ type Method = "POST" | "DELETE" | "PUT";
 interface UseMuataionForm<T> {
   data?: T;
   status: number;
-  errorMessage?: string;
+  error?: string;
   loading: boolean;
 }
 interface UseMutationProps {
@@ -23,7 +23,7 @@ export default function useMutation<T>({
     data: undefined,
     loading: false,
     status: 0,
-    errorMessage: "",
+    error: "",
   });
 
   function handler(data: any) {
@@ -44,7 +44,7 @@ export default function useMutation<T>({
       .then((data) => {
         setState((prev) => ({ ...prev, data }));
       })
-      .catch((error) => setState((prev) => ({ ...prev, errorMessage: error })))
+      .catch((error) => setState((prev) => ({ ...prev, error })))
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
   }
 
