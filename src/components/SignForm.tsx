@@ -85,7 +85,7 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
     <Navigate replace to={"/todo"} />
   ) : (
     <Layout>
-      <h1 className="text-center">{isSignIn ? "Login!" : "Sign Up!"}</h1>
+      <h1 className="text-center">{isSignIn ? "로그인" : "회원가입"}</h1>
       <form
         className="flex flex-col items-center justify-center"
         onSubmit={onSubmitTest}
