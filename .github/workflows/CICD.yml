@@ -1,4 +1,4 @@
-name: CI/CD-11th
+name: CI/CD
 
 on:
   push:
@@ -10,4 +10,4 @@ jobs:
   cicd:
     runs-on: ubuntu-latest
     steps:
-      -run: 'echo "Hello, Github Actions"'
+      - run: 'echo "Hello, Github Actions"'
