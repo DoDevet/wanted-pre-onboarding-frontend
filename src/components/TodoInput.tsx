@@ -51,7 +51,7 @@ export default function TodoInput({
         />
         <div className="flex items-center justify-center w-full">
           <Button
-            btnText={loading ? "Adding..." : "추가"}
+            btnText={loading ? "Adding....." : "추가"}
             disabled={disabled}
             testId="new-todo-add-button"
           />
