@@ -6,6 +6,7 @@ interface UseQueryState<T> {
   loading: boolean;
   error?: object;
   status?: number;
+  refetch: boolean;
 }
 
 export default function useQuery<T>(url: string) {
@@ -14,6 +15,7 @@ export default function useQuery<T>(url: string) {
     data: undefined,
     loading: false,
     status: undefined,
+    refetch: false,
   });
   useEffect(() => {
     fetch(url, {
@@ -32,9 +34,10 @@ export default function useQuery<T>(url: string) {
       })
       .catch((error) => setState((prev) => ({ ...prev, error })))
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
-  }, [url]);
+  }, [url, state.refetch]);
 
   return {
     ...state,
+    refetch: () => setState((prev) => ({ ...prev, refetch: !prev.refetch })),
   };
 }

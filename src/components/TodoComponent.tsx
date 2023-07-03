@@ -1,17 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { TodoForm } from "../pages/Todo";
 import useMutation from "../libs/useMutation";
 import { api_slash } from "../libs/utils";
-interface TodoCompoentsForm extends TodoForm {
-  setTodos: React.Dispatch<React.SetStateAction<TodoForm[] | undefined>>;
-}
-function TodoComponent({
-  id,
-  todo,
-  isCompleted,
-  userId,
-  setTodos,
-}: TodoCompoentsForm) {
+import { SetTodoContext } from "../useContext/Context";
+
+function TodoComponent({ id, todo, isCompleted, userId }: TodoForm) {
+  const setTodos = useContext(SetTodoContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const [editMode, setEditMode] = useState(false);
   const [editTodo, setEditTodo] = useState("");

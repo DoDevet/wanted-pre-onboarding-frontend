@@ -6,6 +6,7 @@ import { api_slash } from "../libs/utils";
 import Layout from "../components/Layout";
 import TodoInput from "../components/TodoInput";
 import TodoComponent from "../components/TodoComponent";
+import { SetTodoContext } from "../useContext/Context";
 export interface TodoForm {
   id: number;
   isCompleted: boolean;
@@ -15,7 +16,9 @@ export interface TodoForm {
 
 export default function Todo() {
   const navigate = useNavigate();
-  const { data, loading, status } = useQuery<TodoForm[]>(api_slash("todos"));
+  const { data, loading, status, refetch } = useQuery<TodoForm[]>(
+    api_slash("todos")
+  );
   const [token, setToken] = useState<string | null>(isLoggedInFN());
   const [todos, setTodos] = useState<TodoForm[]>();
 
@@ -41,24 +44,31 @@ export default function Todo() {
 
   return token ? (
     <Layout>
-      <section className="relative">
-        <TodoInput setTodos={setTodos} />
-        <ul className="space-y-3 ">
-          {todos?.map((todo) => (
-            <TodoComponent
-              setTodos={setTodos}
-              key={todo.id}
-              id={todo.id}
-              isCompleted={todo.isCompleted}
-              todo={todo.todo}
-              userId={todo.userId}
-            />
-          ))}
-        </ul>
-        <button onClick={onClickLogoutBtn} className="absolute right-0 -top-10">
-          Logout
-        </button>
-      </section>
+      <SetTodoContext.Provider value={setTodos}>
+        <section className="relative">
+          <TodoInput />
+          <ul className="space-y-3 ">
+            {todos?.map((todo) => (
+              <TodoComponent
+                key={todo.id}
+                id={todo.id}
+                isCompleted={todo.isCompleted}
+                todo={todo.todo}
+                userId={todo.userId}
+              />
+            ))}
+          </ul>
+          <button
+            onClick={onClickLogoutBtn}
+            className="absolute right-0 -top-10"
+          >
+            Logout
+          </button>
+          <button className="absolute left-0 -top-10" onClick={() => refetch()}>
+            새로고침
+          </button>
+        </section>
+      </SetTodoContext.Provider>
     </Layout>
   ) : (
     <Navigate replace to="/signin" />

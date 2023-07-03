@@ -1,15 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Input from "./Input";
 import { TodoForm } from "../pages/Todo";
 import Button from "./Button";
 import useMutation from "../libs/useMutation";
 import { api_slash } from "../libs/utils";
+import { SetTodoContext } from "../useContext/Context";
 
-export default function TodoInput({
-  setTodos,
-}: {
-  setTodos: React.Dispatch<React.SetStateAction<TodoForm[] | undefined>>;
-}) {
+export default function TodoInput() {
+  const setTodos = useContext(SetTodoContext);
   const [inputTodoText, setInputTodoText] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [createTodo, { data, loading, status }] = useMutation<TodoForm>({

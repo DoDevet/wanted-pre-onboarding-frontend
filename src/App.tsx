@@ -7,15 +7,19 @@ import isLoggedInFN from "./libs/isLoggedIn";
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/*"
-        element={<Navigate replace to={isLoggedInFN() ? "/todo" : "/signin"} />}
-      ></Route>
-      <Route path="/todo" element={<Todo />}></Route>
-      <Route path="/signup" element={<SignUp />}></Route>
-      <Route path="/signin" element={<SignIn />}></Route>
-    </Routes>
+    <>
+      <Routes>
+        <Route
+          path="/*"
+          element={
+            <Navigate replace to={isLoggedInFN() ? "/todo" : "/signin"} />
+          }
+        ></Route>
+        <Route path="/todo" element={<Todo />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
+        <Route path="/signin" element={<SignIn />}></Route>
+      </Routes>
+    </>
   );
 }
 
