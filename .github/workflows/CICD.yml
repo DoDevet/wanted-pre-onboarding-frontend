@@ -1,0 +1,13 @@
+name: CI/CD-11th
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  cicd:
+    runs-on: ubuntu-latest
+    steps:
+      -run: 'echo "Hello, Github Actions"'
