@@ -15,10 +15,9 @@ export interface TodoForm {
 
 export default function Todo() {
   const navigate = useNavigate();
-
+  const { data, loading, status } = useQuery<TodoForm[]>(api_slash("todos"));
   const [token, setToken] = useState<string | null>(isLoggedInFN());
   const [todos, setTodos] = useState<TodoForm[]>();
-  const { data, loading, status } = useQuery<TodoForm[]>(api_slash("todos"));
 
   const onClickLogoutBtn = useCallback(() => {
     localStorage.removeItem("token");

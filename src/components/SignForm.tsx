@@ -24,11 +24,12 @@ interface SignFormProps {
 export default function SignForm({ isSignIn = false }: SignFormProps) {
   const navigate = useNavigate();
 
-  const [signHandler, { loading, data, status }] =
+  const [signHandler, { loading, data, status, error }] =
     useMutation<SignInResponseData>({
       method: "POST",
       url: api_slash("auth", isSignIn ? "signin" : "signup"),
     });
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -44,8 +45,8 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
         state: { email, password },
       });
     }
-    if (data && data.message) setErrorMessage(data.message);
-  }, [data, loading, status, email, password, navigate, isSignIn]);
+    if (error) setErrorMessage(error);
+  }, [data, loading, status, email, password, navigate, isSignIn, error]);
 
   const onSubmitTest = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -84,7 +85,7 @@ export default function SignForm({ isSignIn = false }: SignFormProps) {
     <Navigate replace to={"/todo"} />
   ) : (
     <Layout>
-      <h1 className="text-center">{isSignIn ? "Login" : "Sign Up"}</h1>
+      <h1 className="text-center">{isSignIn ? "Login!" : "Sign Up!"}</h1>
       <form
         className="flex flex-col items-center justify-center"
         onSubmit={onSubmitTest}
